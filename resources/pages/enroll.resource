@@ -26,15 +26,6 @@ Select Plan
     Click    css=div[class$=option] >> text=${plan_name}
 
 Fill Start Date
+    [Arguments]     ${start_date}
 
-    Focus    css=input[name=start_date]
-
-    Keyboard Key    press    1
-    Keyboard Key    press    1
-    Keyboard Key    press    1
-    Keyboard Key    press    1
-    Keyboard Key    press    2
-    Keyboard Key    press    0
-    Keyboard Key    press    2
-    Keyboard Key    press    2
-
+    Fill Text    input[id="start_date"]    ${start_date}
