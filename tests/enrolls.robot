@@ -1,6 +1,5 @@
 *** Settings ***
-Documentation        Suite de testes de matricula de alunos
-...                  Administrador uma vez logado consegue matricular alunos na academia
+Documentation        Admin can enroll new students
 
 Resource        ../resources/base.resource
 
@@ -20,8 +19,6 @@ Deve matricular um aluno
     
     Go To Enrolls
     Go To Enroll Form
-    Select Student    Falcão Não mexer
+    Select Student    Arabella
     Select Plan       Smart
     Fill Start Date
-
-    Sleep    10
