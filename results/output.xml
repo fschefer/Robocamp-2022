@@ -1,17 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot generator="Robot 6.0 (Python 3.10.8 on linux)" generated="20221114 08:20:51.731" rpa="false" schemaversion="3">
+<robot generator="Robot 6.0 (Python 3.10.8 on linux)" generated="20221124 09:35:35.943" rpa="false" schemaversion="3">
 <suite id="s1" name="Robocamp-2022" source="/home/fschefer/Robocamp_Git/Robocamp-2022">
 <suite id="s1-s1" name="Tests" source="/home/fschefer/Robocamp_Git/Robocamp-2022/tests">
 <suite id="s1-s1-s1" name="Enrolls" source="/home/fschefer/Robocamp_Git/Robocamp-2022/tests/enrolls.robot">
 <test id="s1-s1-s1-t1" name="Should enroll an student" line="8">
-<kw name="Create Dictionary" library="BuiltIn">
+<kw name="Get Fixture" library="base">
 <var>${admin}</var>
-<arg>name=Admin</arg>
-<arg>email=admin@smartbit.com</arg>
-<arg>pass=qacademy</arg>
-<doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20221114 08:20:52.443" level="INFO">${admin} = {'name': 'Admin', 'email': 'admin@smartbit.com', 'pass': 'qacademy'}</msg>
-<status status="PASS" starttime="20221114 08:20:52.442" endtime="20221114 08:20:52.444"/>
+<arg>admin</arg>
+<kw name="Load Json From File" library="JSONLibrary">
+<var>${fixture}</var>
+<arg>${EXECDIR}/resources/fixtures/${fixture_file}.json</arg>
+<doc>Load JSON from file.</doc>
+<msg timestamp="20221124 09:35:36.662" level="INFO">${fixture} = {'name': 'Admin', 'email': 'admin@smartbit.com', 'pass': 'qacademy'}</msg>
+<status status="PASS" starttime="20221124 09:35:36.662" endtime="20221124 09:35:36.662"/>
+</kw>
+<return>
+<value>${fixture}</value>
+<status status="PASS" starttime="20221124 09:35:36.663" endtime="20221124 09:35:36.663"/>
+</return>
+<msg timestamp="20221124 09:35:36.663" level="INFO">${admin} = {'name': 'Admin', 'email': 'admin@smartbit.com', 'pass': 'qacademy'}</msg>
+<status status="PASS" starttime="20221124 09:35:36.661" endtime="20221124 09:35:36.663"/>
+</kw>
+<kw name="Get Fixture" library="base">
+<var>${student}</var>
+<arg>student</arg>
+<kw name="Load Json From File" library="JSONLibrary">
+<var>${fixture}</var>
+<arg>${EXECDIR}/resources/fixtures/${fixture_file}.json</arg>
+<doc>Load JSON from file.</doc>
+<msg timestamp="20221124 09:35:36.667" level="INFO">${fixture} = {'name': 'Arabella Alves', 'email': 'arabella@smartest.com', 'enroll': {'plan': 'Smart'}}</msg>
+<status status="PASS" starttime="20221124 09:35:36.665" endtime="20221124 09:35:36.668"/>
+</kw>
+<return>
+<value>${fixture}</value>
+<status status="PASS" starttime="20221124 09:35:36.669" endtime="20221124 09:35:36.669"/>
+</return>
+<msg timestamp="20221124 09:35:36.670" level="INFO">${student} = {'name': 'Arabella Alves', 'email': 'arabella@smartest.com', 'enroll': {'plan': 'Smart'}}</msg>
+<status status="PASS" starttime="20221124 09:35:36.664" endtime="20221124 09:35:36.670"/>
+</kw>
+<kw name="Connect to Postgres" library="database">
+<kw name="Connect To Database" library="DatabaseLibrary">
+<arg>psycopg2</arg>
+<arg>icrdwkxo</arg>
+<arg>icrdwkxo</arg>
+<arg>t2Nzj4ilucJng56lN6Wqzt1GMLV0NI3J</arg>
+<arg>babar.db.elephantsql.com</arg>
+<arg>5432</arg>
+<doc>Loads the DB API 2.0 module given `dbapiModuleName` then uses it to
+connect to the database using `dbName`, `dbUsername`, and `dbPassword`.</doc>
+<msg timestamp="20221124 09:35:36.682" level="INFO">Connecting using : psycopg2.connect(database=icrdwkxo, user=icrdwkxo, password=t2Nzj4ilucJng56lN6Wqzt1GMLV0NI3J, host=babar.db.elephantsql.com, port=5432) </msg>
+<status status="PASS" starttime="20221124 09:35:36.671" endtime="20221124 09:35:37.681"/>
+</kw>
+<status status="PASS" starttime="20221124 09:35:36.670" endtime="20221124 09:35:37.682"/>
+</kw>
+<kw name="Delete Enrollment By E-mail" library="database">
+<arg>${student}[email]</arg>
+<kw name="Select User by E-mail" library="database">
+<var>${user}</var>
+<arg>${email}</arg>
+<kw name="Set Variable" library="BuiltIn">
+<var>${query}</var>
+<arg>SELECT * FROM public.students WHERE email='${email}'</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20221124 09:35:37.686" level="INFO">${query} = SELECT * FROM public.students WHERE email='arabella@smartest.com'</msg>
+<status status="PASS" starttime="20221124 09:35:37.685" endtime="20221124 09:35:37.686"/>
+</kw>
+<kw name="Query" library="DatabaseLibrary">
+<var>${result}</var>
+<arg>${query}</arg>
+<doc>Uses the input `selectStatement` to query for the values that will be returned as a list of tuples. Set optional
+input `sansTran` to True to run command without an explicit transaction commit or rollback.
+Set optional input `returnAsDict` to True to return values as a list of dictionaries.</doc>
+<msg timestamp="20221124 09:35:37.687" level="INFO">Executing : Query  |  SELECT * FROM public.students WHERE email='arabella@smartest.com' </msg>
+<msg timestamp="20221124 09:35:37.835" level="INFO">${result} = [(6, 'arabella@smartest.com', 'Arabella Alves', 22, Decimal('80.00'), Decimal('1.65'), datetime.datetime(2022, 11, 14, 11, 4, 58, 916000, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 11, 14,...</msg>
+<status status="PASS" starttime="20221124 09:35:37.687" endtime="20221124 09:35:37.836"/>
+</kw>
+<return>
+<value>${result}[0]</value>
+<status status="PASS" starttime="20221124 09:35:37.836" endtime="20221124 09:35:37.837"/>
+</return>
+<msg timestamp="20221124 09:35:37.837" level="INFO">${user} = (6, 'arabella@smartest.com', 'Arabella Alves', 22, Decimal('80.00'), Decimal('1.65'), datetime.datetime(2022, 11, 14, 11, 4, 58, 916000, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 11, 14, ...</msg>
+<status status="PASS" starttime="20221124 09:35:37.684" endtime="20221124 09:35:37.838"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${query}</var>
+<arg>DELETE FROM public.enrollments WHERE student_id ='${user}[0]';</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20221124 09:35:37.839" level="INFO">${query} = DELETE FROM public.enrollments WHERE student_id ='6';</msg>
+<status status="PASS" starttime="20221124 09:35:37.838" endtime="20221124 09:35:37.839"/>
+</kw>
+<kw name="Execute Sql String" library="DatabaseLibrary">
+<arg>${query}</arg>
+<doc>Executes the sqlString as SQL commands. Useful to pass arguments to your sql. Set optional input `sansTran` to
+True to run command without an explicit transaction commit or rollback.</doc>
+<msg timestamp="20221124 09:35:37.843" level="INFO">Executing : Execute SQL String  |  DELETE FROM public.enrollments WHERE student_id ='6'; </msg>
+<status status="PASS" starttime="20221124 09:35:37.840" endtime="20221124 09:35:37.992"/>
+</kw>
+<status status="PASS" starttime="20221124 09:35:37.682" endtime="20221124 09:35:37.993"/>
+</kw>
+<kw name="Disconnect From Database" library="DatabaseLibrary">
+<doc>Disconnects from the database.</doc>
+<msg timestamp="20221124 09:35:37.994" level="INFO">Executing : Disconnect From Database</msg>
+<status status="PASS" starttime="20221124 09:35:37.993" endtime="20221124 09:35:37.994"/>
 </kw>
 <kw name="Do Login" library="base">
 <arg>${admin}</arg>
@@ -22,20 +112,20 @@
 <tag>BrowserControl</tag>
 <tag>Setter</tag>
 <doc>Create a new playwright Browser with specified options.</doc>
-<msg timestamp="20221114 08:20:52.447" level="INFO">{"browser": "chromium", "headless": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "deprecated_pos_args": [], "tracesDir": "/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/5acd0d2a-4441-4117-97a4-6f8423f62870"}</msg>
-<msg timestamp="20221114 08:20:52.731" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"deprecated_pos_args":[],"tracesDir":"/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/5acd0d2a-4441-4117-97a4-6f8423f62870"}</msg>
-<status status="PASS" starttime="20221114 08:20:52.446" endtime="20221114 08:20:52.731"/>
+<msg timestamp="20221124 09:35:37.997" level="INFO">{"browser": "chromium", "headless": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "deprecated_pos_args": [], "tracesDir": "/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/2ef764d0-cfc9-4ebe-9cb2-235f3c0116aa"}</msg>
+<msg timestamp="20221124 09:35:38.264" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"deprecated_pos_args":[],"tracesDir":"/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/2ef764d0-cfc9-4ebe-9cb2-235f3c0116aa"}</msg>
+<status status="PASS" starttime="20221124 09:35:37.996" endtime="20221124 09:35:38.264"/>
 </kw>
 <kw name="New Page" library="Browser">
 <arg>http://localhost:3000</arg>
 <tag>BrowserControl</tag>
 <tag>Setter</tag>
 <doc>Open a new Page.</doc>
-<msg timestamp="20221114 08:20:53.778" level="INFO">Successfully initialized new page object and opened url: http://localhost:3000</msg>
-<msg timestamp="20221114 08:20:53.778" level="INFO">No context was open. New context was automatically opened when this page is created.</msg>
-<status status="PASS" starttime="20221114 08:20:52.732" endtime="20221114 08:20:53.779"/>
+<msg timestamp="20221124 09:35:39.298" level="INFO">Successfully initialized new page object and opened url: http://localhost:3000</msg>
+<msg timestamp="20221124 09:35:39.298" level="INFO">No context was open. New context was automatically opened when this page is created.</msg>
+<status status="PASS" starttime="20221124 09:35:38.265" endtime="20221124 09:35:39.299"/>
 </kw>
-<status status="PASS" starttime="20221114 08:20:52.445" endtime="20221114 08:20:53.779"/>
+<status status="PASS" starttime="20221124 09:35:37.996" endtime="20221124 09:35:39.301"/>
 </kw>
 <kw name="Fill Credentials" library="login">
 <arg>${user}[email]</arg>
@@ -46,8 +136,8 @@
 <tag>PageContent</tag>
 <tag>Setter</tag>
 <doc>Clears and fills the given ``txt`` into the text field found by ``selector``.</doc>
-<msg timestamp="20221114 08:20:53.783" level="INFO">Fills the text 'admin@smartbit.com' in the given field.</msg>
-<status status="PASS" starttime="20221114 08:20:53.781" endtime="20221114 08:20:53.839"/>
+<msg timestamp="20221124 09:35:39.309" level="INFO">Fills the text 'admin@smartbit.com' in the given field.</msg>
+<status status="PASS" starttime="20221124 09:35:39.307" endtime="20221124 09:35:39.372"/>
 </kw>
 <kw name="Fill Text" library="Browser">
 <arg>css=input[placeholder="Sua Senha"]</arg>
@@ -55,10 +145,10 @@
 <tag>PageContent</tag>
 <tag>Setter</tag>
 <doc>Clears and fills the given ``txt`` into the text field found by ``selector``.</doc>
-<msg timestamp="20221114 08:20:53.840" level="INFO">Fills the text 'qacademy' in the given field.</msg>
-<status status="PASS" starttime="20221114 08:20:53.839" endtime="20221114 08:20:53.865"/>
+<msg timestamp="20221124 09:35:39.374" level="INFO">Fills the text 'qacademy' in the given field.</msg>
+<status status="PASS" starttime="20221124 09:35:39.373" endtime="20221124 09:35:39.395"/>
 </kw>
-<status status="PASS" starttime="20221114 08:20:53.780" endtime="20221114 08:20:53.866"/>
+<status status="PASS" starttime="20221124 09:35:39.305" endtime="20221124 09:35:39.396"/>
 </kw>
 <kw name="Submit Credentials" library="login">
 <kw name="Click" library="Browser">
@@ -66,9 +156,9 @@
 <tag>PageContent</tag>
 <tag>Setter</tag>
 <doc>Simulates mouse click on the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:20:53.868" endtime="20221114 08:20:53.930"/>
+<status status="PASS" starttime="20221124 09:35:39.396" endtime="20221124 09:35:39.465"/>
 </kw>
-<status status="PASS" starttime="20221114 08:20:53.867" endtime="20221114 08:20:53.931"/>
+<status status="PASS" starttime="20221124 09:35:39.396" endtime="20221124 09:35:39.466"/>
 </kw>
 <kw name="User Should Be Looged In" library="navbar">
 <arg>${user}[name]</arg>
@@ -76,8 +166,8 @@
 <var>${logged_user}</var>
 <arg>css=aside strong</arg>
 <doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20221114 08:20:53.934" level="INFO">${logged_user} = css=aside strong</msg>
-<status status="PASS" starttime="20221114 08:20:53.934" endtime="20221114 08:20:53.935"/>
+<msg timestamp="20221124 09:35:39.470" level="INFO">${logged_user} = css=aside strong</msg>
+<status status="PASS" starttime="20221124 09:35:39.469" endtime="20221124 09:35:39.472"/>
 </kw>
 <kw name="Wait For Elements State" library="Browser">
 <arg>${logged_user}</arg>
@@ -86,8 +176,8 @@
 <tag>PageContent</tag>
 <tag>Wait</tag>
 <doc>Waits for the element found by ``selector`` to satisfy state option.</doc>
-<msg timestamp="20221114 08:20:54.324" level="INFO">Waited for Element with selector css=aside strong at state visible</msg>
-<status status="PASS" starttime="20221114 08:20:53.935" endtime="20221114 08:20:54.324"/>
+<msg timestamp="20221124 09:35:40.668" level="INFO">Waited for Element with selector css=aside strong at state visible</msg>
+<status status="PASS" starttime="20221124 09:35:39.473" endtime="20221124 09:35:40.669"/>
 </kw>
 <kw name="Get Text" library="Browser">
 <arg>${logged_user}</arg>
@@ -97,11 +187,11 @@
 <tag>Getter</tag>
 <tag>PageContent</tag>
 <doc>Returns text attribute of the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:20:54.325" endtime="20221114 08:20:54.362"/>
+<status status="PASS" starttime="20221124 09:35:40.669" endtime="20221124 09:35:40.710"/>
 </kw>
-<status status="PASS" starttime="20221114 08:20:53.931" endtime="20221114 08:20:54.362"/>
+<status status="PASS" starttime="20221124 09:35:39.468" endtime="20221124 09:35:40.710"/>
 </kw>
-<status status="PASS" starttime="20221114 08:20:52.444" endtime="20221114 08:20:54.362"/>
+<status status="PASS" starttime="20221124 09:35:37.995" endtime="20221124 09:35:40.711"/>
 </kw>
 <kw name="Go To Enrolls" library="enroll">
 <kw name="Click" library="Browser">
@@ -109,9 +199,9 @@
 <tag>PageContent</tag>
 <tag>Setter</tag>
 <doc>Simulates mouse click on the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:20:54.363" endtime="20221114 08:20:54.473"/>
+<status status="PASS" starttime="20221124 09:35:40.712" endtime="20221124 09:35:40.793"/>
 </kw>
-<status status="PASS" starttime="20221114 08:20:54.363" endtime="20221114 08:20:54.473"/>
+<status status="PASS" starttime="20221124 09:35:40.711" endtime="20221124 09:35:40.794"/>
 </kw>
 <kw name="Go To Enroll Form" library="enroll">
 <kw name="Click" library="Browser">
@@ -119,47 +209,47 @@
 <tag>PageContent</tag>
 <tag>Setter</tag>
 <doc>Simulates mouse click on the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:20:54.474" endtime="20221114 08:20:54.578"/>
+<status status="PASS" starttime="20221124 09:35:40.795" endtime="20221124 09:35:40.896"/>
 </kw>
-<status status="PASS" starttime="20221114 08:20:54.473" endtime="20221114 08:20:54.578"/>
+<status status="PASS" starttime="20221124 09:35:40.794" endtime="20221124 09:35:40.896"/>
 </kw>
 <kw name="Select Student" library="enroll">
-<arg>Arabella</arg>
+<arg>${student}[name]</arg>
 <kw name="Fill Text" library="Browser">
 <arg>xpath=//div[contains(text(), "nome do aluno")]/..//input</arg>
 <arg>${student_name}</arg>
 <tag>PageContent</tag>
 <tag>Setter</tag>
 <doc>Clears and fills the given ``txt`` into the text field found by ``selector``.</doc>
-<msg timestamp="20221114 08:20:54.580" level="INFO">Fills the text 'Arabella' in the given field.</msg>
-<status status="PASS" starttime="20221114 08:20:54.579" endtime="20221114 08:20:54.644"/>
+<msg timestamp="20221124 09:35:40.899" level="INFO">Fills the text 'Arabella Alves' in the given field.</msg>
+<status status="PASS" starttime="20221124 09:35:40.898" endtime="20221124 09:35:40.964"/>
 </kw>
 <kw name="Click" library="Browser">
 <arg>css=div[class$=option] &gt;&gt; text=${student_name}</arg>
 <tag>PageContent</tag>
 <tag>Setter</tag>
 <doc>Simulates mouse click on the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:20:54.644" endtime="20221114 08:20:54.743"/>
+<status status="PASS" starttime="20221124 09:35:40.964" endtime="20221124 09:35:41.130"/>
 </kw>
-<status status="PASS" starttime="20221114 08:20:54.578" endtime="20221114 08:20:54.743"/>
+<status status="PASS" starttime="20221124 09:35:40.897" endtime="20221124 09:35:41.130"/>
 </kw>
 <kw name="Select Plan" library="enroll">
-<arg>Smart</arg>
+<arg>${student}[enroll][plan]</arg>
 <kw name="Click" library="Browser">
 <arg>xpath=//label[text()="PLANO"]/..//div[contains(text(), "Selecione")]</arg>
 <tag>PageContent</tag>
 <tag>Setter</tag>
 <doc>Simulates mouse click on the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:20:54.744" endtime="20221114 08:20:54.813"/>
+<status status="PASS" starttime="20221124 09:35:41.133" endtime="20221124 09:35:41.175"/>
 </kw>
 <kw name="Click" library="Browser">
 <arg>css=div[class$=option] &gt;&gt; text=${plan_name}</arg>
 <tag>PageContent</tag>
 <tag>Setter</tag>
 <doc>Simulates mouse click on the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:20:54.814" endtime="20221114 08:20:54.873"/>
+<status status="PASS" starttime="20221124 09:35:41.176" endtime="20221124 09:35:41.240"/>
 </kw>
-<status status="PASS" starttime="20221114 08:20:54.743" endtime="20221114 08:20:54.873"/>
+<status status="PASS" starttime="20221124 09:35:41.131" endtime="20221124 09:35:41.240"/>
 </kw>
 <kw name="Fill Start Date" library="enroll">
 <arg>2022-11-14</arg>
@@ -169,17 +259,17 @@
 <tag>PageContent</tag>
 <tag>Setter</tag>
 <doc>Clears and fills the given ``txt`` into the text field found by ``selector``.</doc>
-<msg timestamp="20221114 08:20:54.875" level="INFO">Fills the text '2022-11-14' in the given field.</msg>
-<status status="PASS" starttime="20221114 08:20:54.875" endtime="20221114 08:20:54.904"/>
+<msg timestamp="20221124 09:35:41.242" level="INFO">Fills the text '2022-11-14' in the given field.</msg>
+<status status="PASS" starttime="20221124 09:35:41.241" endtime="20221124 09:35:41.276"/>
 </kw>
-<status status="PASS" starttime="20221114 08:20:54.874" endtime="20221114 08:20:54.905"/>
+<status status="PASS" starttime="20221124 09:35:41.241" endtime="20221124 09:35:41.276"/>
 </kw>
 <kw name="Click" library="Browser">
 <arg>css=button[type=submit]</arg>
 <tag>PageContent</tag>
 <tag>Setter</tag>
 <doc>Simulates mouse click on the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:20:54.906" endtime="20221114 08:20:54.965"/>
+<status status="PASS" starttime="20221124 09:35:41.276" endtime="20221124 09:35:41.344"/>
 </kw>
 <kw name="Verify Toaster" library="toast">
 <arg>Matrícula cadastrada com sucesso</arg>
@@ -190,595 +280,30 @@
 <tag>PageContent</tag>
 <tag>Wait</tag>
 <doc>Waits for the element found by ``selector`` to satisfy state option.</doc>
-<msg timestamp="20221114 08:20:55.424" level="INFO">Waited for Element with selector css=.Toastify__toast-body div &gt;&gt; text=Matrícula cadastrada com sucesso at state visible</msg>
-<status status="PASS" starttime="20221114 08:20:54.973" endtime="20221114 08:20:55.424"/>
+<msg timestamp="20221124 09:35:41.809" level="INFO">Waited for Element with selector css=.Toastify__toast-body div &gt;&gt; text=Matrícula cadastrada com sucesso at state visible</msg>
+<status status="PASS" starttime="20221124 09:35:41.346" endtime="20221124 09:35:41.809"/>
 </kw>
-<status status="PASS" starttime="20221114 08:20:54.971" endtime="20221114 08:20:55.425"/>
+<status status="PASS" starttime="20221124 09:35:41.345" endtime="20221124 09:35:41.810"/>
 </kw>
-<status status="PASS" starttime="20221114 08:20:52.438" endtime="20221114 08:20:55.425"/>
+<status status="PASS" starttime="20221124 09:35:36.658" endtime="20221124 09:35:41.810"/>
 </test>
 <doc>Admin can enroll new students</doc>
-<status status="PASS" starttime="20221114 08:20:51.878" endtime="20221114 08:20:55.511"/>
+<status status="PASS" starttime="20221124 09:35:36.067" endtime="20221124 09:35:41.895"/>
 </suite>
-<suite id="s1-s1-s2" name="Login" source="/home/fschefer/Robocamp_Git/Robocamp-2022/tests/login.robot">
-<test id="s1-s1-s2-t1" name="Admin login" line="9">
-<kw name="Go To Login Page" library="login">
-<kw name="New Browser" library="Browser">
-<arg>headless=False</arg>
-<arg>browser=chromium</arg>
-<tag>BrowserControl</tag>
-<tag>Setter</tag>
-<doc>Create a new playwright Browser with specified options.</doc>
-<msg timestamp="20221114 08:20:55.541" level="INFO">{"browser": "chromium", "headless": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "deprecated_pos_args": [], "tracesDir": "/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/290a07f3-a90b-4439-bf88-1fd0cef67a93"}</msg>
-<msg timestamp="20221114 08:20:55.893" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"deprecated_pos_args":[],"tracesDir":"/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/290a07f3-a90b-4439-bf88-1fd0cef67a93"}</msg>
-<status status="PASS" starttime="20221114 08:20:55.540" endtime="20221114 08:20:55.894"/>
-</kw>
-<kw name="New Page" library="Browser">
-<arg>http://localhost:3000</arg>
-<tag>BrowserControl</tag>
-<tag>Setter</tag>
-<doc>Open a new Page.</doc>
-<msg timestamp="20221114 08:20:56.891" level="INFO">Successfully initialized new page object and opened url: http://localhost:3000</msg>
-<msg timestamp="20221114 08:20:56.891" level="INFO">No context was open. New context was automatically opened when this page is created.</msg>
-<status status="PASS" starttime="20221114 08:20:55.894" endtime="20221114 08:20:56.892"/>
-</kw>
-<status status="PASS" starttime="20221114 08:20:55.538" endtime="20221114 08:20:56.892"/>
-</kw>
-<kw name="Fill Credentials" library="login">
-<arg>admin@smartbit.com</arg>
-<arg>qacademy</arg>
-<kw name="Fill Text" library="Browser">
-<arg>css=input[placeholder="Seu e-mail"]</arg>
-<arg>${email}</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Clears and fills the given ``txt`` into the text field found by ``selector``.</doc>
-<msg timestamp="20221114 08:20:56.901" level="INFO">Fills the text 'admin@smartbit.com' in the given field.</msg>
-<status status="PASS" starttime="20221114 08:20:56.897" endtime="20221114 08:20:56.954"/>
-</kw>
-<kw name="Fill Text" library="Browser">
-<arg>css=input[placeholder="Sua Senha"]</arg>
-<arg>${pass}</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Clears and fills the given ``txt`` into the text field found by ``selector``.</doc>
-<msg timestamp="20221114 08:20:56.955" level="INFO">Fills the text 'qacademy' in the given field.</msg>
-<status status="PASS" starttime="20221114 08:20:56.954" endtime="20221114 08:20:56.979"/>
-</kw>
-<status status="PASS" starttime="20221114 08:20:56.895" endtime="20221114 08:20:56.979"/>
-</kw>
-<kw name="Submit Credentials" library="login">
-<kw name="Click" library="Browser">
-<arg>css=button &gt;&gt; text=Entrar no sistema</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Simulates mouse click on the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:20:56.980" endtime="20221114 08:20:57.047"/>
-</kw>
-<status status="PASS" starttime="20221114 08:20:56.979" endtime="20221114 08:20:57.048"/>
-</kw>
-<kw name="User Should Be Looged In" library="navbar">
-<arg>Admin</arg>
-<kw name="Set Variable" library="BuiltIn">
-<var>${logged_user}</var>
-<arg>css=aside strong</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20221114 08:20:57.051" level="INFO">${logged_user} = css=aside strong</msg>
-<status status="PASS" starttime="20221114 08:20:57.050" endtime="20221114 08:20:57.056"/>
-</kw>
-<kw name="Wait For Elements State" library="Browser">
-<arg>${logged_user}</arg>
-<arg>visible</arg>
-<arg>5</arg>
-<tag>PageContent</tag>
-<tag>Wait</tag>
-<doc>Waits for the element found by ``selector`` to satisfy state option.</doc>
-<msg timestamp="20221114 08:20:57.209" level="INFO">Waited for Element with selector css=aside strong at state visible</msg>
-<status status="PASS" starttime="20221114 08:20:57.057" endtime="20221114 08:20:57.209"/>
-</kw>
-<kw name="Get Text" library="Browser">
-<arg>${logged_user}</arg>
-<arg>equal</arg>
-<arg>${user_name}</arg>
-<tag>Assertion</tag>
-<tag>Getter</tag>
-<tag>PageContent</tag>
-<doc>Returns text attribute of the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:20:57.210" endtime="20221114 08:20:57.270"/>
-</kw>
-<status status="PASS" starttime="20221114 08:20:57.050" endtime="20221114 08:20:57.271"/>
-</kw>
-<status status="PASS" starttime="20221114 08:20:55.529" endtime="20221114 08:20:57.271"/>
-</test>
-<test id="s1-s1-s2-t2" name="Incorrect Email" line="16">
-<kw name="Go To Login Page" library="login">
-<kw name="New Browser" library="Browser">
-<arg>headless=False</arg>
-<arg>browser=chromium</arg>
-<tag>BrowserControl</tag>
-<tag>Setter</tag>
-<doc>Create a new playwright Browser with specified options.</doc>
-<msg timestamp="20221114 08:20:57.362" level="INFO">{"browser": "chromium", "headless": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "deprecated_pos_args": [], "tracesDir": "/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/8258b2ad-6c51-4b27-8256-d0b5d63d9549"}</msg>
-<msg timestamp="20221114 08:20:57.689" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"deprecated_pos_args":[],"tracesDir":"/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/8258b2ad-6c51-4b27-8256-d0b5d63d9549"}</msg>
-<status status="PASS" starttime="20221114 08:20:57.361" endtime="20221114 08:20:57.689"/>
-</kw>
-<kw name="New Page" library="Browser">
-<arg>http://localhost:3000</arg>
-<tag>BrowserControl</tag>
-<tag>Setter</tag>
-<doc>Open a new Page.</doc>
-<msg timestamp="20221114 08:20:58.738" level="INFO">Successfully initialized new page object and opened url: http://localhost:3000</msg>
-<msg timestamp="20221114 08:20:58.739" level="INFO">No context was open. New context was automatically opened when this page is created.</msg>
-<status status="PASS" starttime="20221114 08:20:57.690" endtime="20221114 08:20:58.740"/>
-</kw>
-<status status="PASS" starttime="20221114 08:20:57.360" endtime="20221114 08:20:58.741"/>
-</kw>
-<kw name="Fill Credentials" library="login">
-<arg>404@smartbit.com</arg>
-<arg>qacademy</arg>
-<kw name="Fill Text" library="Browser">
-<arg>css=input[placeholder="Seu e-mail"]</arg>
-<arg>${email}</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Clears and fills the given ``txt`` into the text field found by ``selector``.</doc>
-<msg timestamp="20221114 08:20:58.746" level="INFO">Fills the text '404@smartbit.com' in the given field.</msg>
-<status status="PASS" starttime="20221114 08:20:58.745" endtime="20221114 08:20:58.799"/>
-</kw>
-<kw name="Fill Text" library="Browser">
-<arg>css=input[placeholder="Sua Senha"]</arg>
-<arg>${pass}</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Clears and fills the given ``txt`` into the text field found by ``selector``.</doc>
-<msg timestamp="20221114 08:20:58.800" level="INFO">Fills the text 'qacademy' in the given field.</msg>
-<status status="PASS" starttime="20221114 08:20:58.799" endtime="20221114 08:20:58.825"/>
-</kw>
-<status status="PASS" starttime="20221114 08:20:58.744" endtime="20221114 08:20:58.825"/>
-</kw>
-<kw name="Submit Credentials" library="login">
-<kw name="Click" library="Browser">
-<arg>css=button &gt;&gt; text=Entrar no sistema</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Simulates mouse click on the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:20:58.827" endtime="20221114 08:20:58.899"/>
-</kw>
-<status status="PASS" starttime="20221114 08:20:58.826" endtime="20221114 08:20:58.900"/>
-</kw>
-<kw name="Verify Toaster" library="toast">
-<arg>Suas credenciais são inválidas, por favor tente novamente!</arg>
-<kw name="Wait For Elements State" library="Browser">
-<arg>css=.Toastify__toast-body div &gt;&gt; text=${expected_message}</arg>
-<arg>visible</arg>
-<arg>5</arg>
-<tag>PageContent</tag>
-<tag>Wait</tag>
-<doc>Waits for the element found by ``selector`` to satisfy state option.</doc>
-<msg timestamp="20221114 08:20:58.956" level="INFO">Waited for Element with selector css=.Toastify__toast-body div &gt;&gt; text=Suas credenciais são inválidas, por favor tente novamente! at state visible</msg>
-<status status="PASS" starttime="20221114 08:20:58.902" endtime="20221114 08:20:58.957"/>
-</kw>
-<status status="PASS" starttime="20221114 08:20:58.900" endtime="20221114 08:20:58.957"/>
-</kw>
-<status status="PASS" starttime="20221114 08:20:57.351" endtime="20221114 08:20:58.959"/>
-</test>
-<test id="s1-s1-s2-t3" name="Incorrect password" line="22">
-<kw name="Go To Login Page" library="login">
-<kw name="New Browser" library="Browser">
-<arg>headless=False</arg>
-<arg>browser=chromium</arg>
-<tag>BrowserControl</tag>
-<tag>Setter</tag>
-<doc>Create a new playwright Browser with specified options.</doc>
-<msg timestamp="20221114 08:20:59.036" level="INFO">{"browser": "chromium", "headless": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "deprecated_pos_args": [], "tracesDir": "/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/63ba07d0-9256-4a26-ae4e-33b237e9cd0d"}</msg>
-<msg timestamp="20221114 08:20:59.379" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"deprecated_pos_args":[],"tracesDir":"/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/63ba07d0-9256-4a26-ae4e-33b237e9cd0d"}</msg>
-<status status="PASS" starttime="20221114 08:20:59.035" endtime="20221114 08:20:59.379"/>
-</kw>
-<kw name="New Page" library="Browser">
-<arg>http://localhost:3000</arg>
-<tag>BrowserControl</tag>
-<tag>Setter</tag>
-<doc>Open a new Page.</doc>
-<msg timestamp="20221114 08:21:00.362" level="INFO">Successfully initialized new page object and opened url: http://localhost:3000</msg>
-<msg timestamp="20221114 08:21:00.362" level="INFO">No context was open. New context was automatically opened when this page is created.</msg>
-<status status="PASS" starttime="20221114 08:20:59.380" endtime="20221114 08:21:00.363"/>
-</kw>
-<status status="PASS" starttime="20221114 08:20:59.033" endtime="20221114 08:21:00.365"/>
-</kw>
-<kw name="Fill Credentials" library="login">
-<arg>admin@smartbit.com</arg>
-<arg>abc123</arg>
-<kw name="Fill Text" library="Browser">
-<arg>css=input[placeholder="Seu e-mail"]</arg>
-<arg>${email}</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Clears and fills the given ``txt`` into the text field found by ``selector``.</doc>
-<msg timestamp="20221114 08:21:00.371" level="INFO">Fills the text 'admin@smartbit.com' in the given field.</msg>
-<status status="PASS" starttime="20221114 08:21:00.370" endtime="20221114 08:21:00.440"/>
-</kw>
-<kw name="Fill Text" library="Browser">
-<arg>css=input[placeholder="Sua Senha"]</arg>
-<arg>${pass}</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Clears and fills the given ``txt`` into the text field found by ``selector``.</doc>
-<msg timestamp="20221114 08:21:00.441" level="INFO">Fills the text 'abc123' in the given field.</msg>
-<status status="PASS" starttime="20221114 08:21:00.440" endtime="20221114 08:21:00.465"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:00.368" endtime="20221114 08:21:00.466"/>
-</kw>
-<kw name="Submit Credentials" library="login">
-<kw name="Click" library="Browser">
-<arg>css=button &gt;&gt; text=Entrar no sistema</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Simulates mouse click on the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:21:00.470" endtime="20221114 08:21:00.537"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:00.467" endtime="20221114 08:21:00.537"/>
-</kw>
-<kw name="Verify Toaster" library="toast">
-<arg>Suas credenciais são inválidas, por favor tente novamente!</arg>
-<kw name="Wait For Elements State" library="Browser">
-<arg>css=.Toastify__toast-body div &gt;&gt; text=${expected_message}</arg>
-<arg>visible</arg>
-<arg>5</arg>
-<tag>PageContent</tag>
-<tag>Wait</tag>
-<doc>Waits for the element found by ``selector`` to satisfy state option.</doc>
-<msg timestamp="20221114 08:21:00.623" level="INFO">Waited for Element with selector css=.Toastify__toast-body div &gt;&gt; text=Suas credenciais são inválidas, por favor tente novamente! at state visible</msg>
-<status status="PASS" starttime="20221114 08:21:00.538" endtime="20221114 08:21:00.624"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:00.538" endtime="20221114 08:21:00.624"/>
-</kw>
-<status status="PASS" starttime="20221114 08:20:59.027" endtime="20221114 08:21:00.625"/>
-</test>
-<test id="s1-s1-s2-t4" name="Email in incorrect format" line="28">
-<kw name="Go To Login Page" library="login">
-<kw name="New Browser" library="Browser">
-<arg>headless=False</arg>
-<arg>browser=chromium</arg>
-<tag>BrowserControl</tag>
-<tag>Setter</tag>
-<doc>Create a new playwright Browser with specified options.</doc>
-<msg timestamp="20221114 08:21:00.701" level="INFO">{"browser": "chromium", "headless": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "deprecated_pos_args": [], "tracesDir": "/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/b016899d-3ae8-4bd1-b718-3dab4ec30606"}</msg>
-<msg timestamp="20221114 08:21:01.069" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"deprecated_pos_args":[],"tracesDir":"/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/b016899d-3ae8-4bd1-b718-3dab4ec30606"}</msg>
-<status status="PASS" starttime="20221114 08:21:00.700" endtime="20221114 08:21:01.070"/>
-</kw>
-<kw name="New Page" library="Browser">
-<arg>http://localhost:3000</arg>
-<tag>BrowserControl</tag>
-<tag>Setter</tag>
-<doc>Open a new Page.</doc>
-<msg timestamp="20221114 08:21:02.057" level="INFO">Successfully initialized new page object and opened url: http://localhost:3000</msg>
-<msg timestamp="20221114 08:21:02.058" level="INFO">No context was open. New context was automatically opened when this page is created.</msg>
-<status status="PASS" starttime="20221114 08:21:01.071" endtime="20221114 08:21:02.058"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:00.699" endtime="20221114 08:21:02.059"/>
-</kw>
-<kw name="Fill Credentials" library="login">
-<arg>@com.br</arg>
-<arg>abc123</arg>
-<kw name="Fill Text" library="Browser">
-<arg>css=input[placeholder="Seu e-mail"]</arg>
-<arg>${email}</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Clears and fills the given ``txt`` into the text field found by ``selector``.</doc>
-<msg timestamp="20221114 08:21:02.067" level="INFO">Fills the text '@com.br' in the given field.</msg>
-<status status="PASS" starttime="20221114 08:21:02.060" endtime="20221114 08:21:02.109"/>
-</kw>
-<kw name="Fill Text" library="Browser">
-<arg>css=input[placeholder="Sua Senha"]</arg>
-<arg>${pass}</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Clears and fills the given ``txt`` into the text field found by ``selector``.</doc>
-<msg timestamp="20221114 08:21:02.110" level="INFO">Fills the text 'abc123' in the given field.</msg>
-<status status="PASS" starttime="20221114 08:21:02.109" endtime="20221114 08:21:02.131"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:02.059" endtime="20221114 08:21:02.132"/>
-</kw>
-<kw name="Submit Credentials" library="login">
-<kw name="Click" library="Browser">
-<arg>css=button &gt;&gt; text=Entrar no sistema</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Simulates mouse click on the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:21:02.135" endtime="20221114 08:21:02.193"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:02.134" endtime="20221114 08:21:02.194"/>
-</kw>
-<kw name="Field Type Should Be Email" library="login">
-<kw name="Get Attribute" library="Browser">
-<arg>css=input[placeholder="Seu e-mail"]</arg>
-<arg>type</arg>
-<arg>equal</arg>
-<arg>email</arg>
-<tag>Assertion</tag>
-<tag>Getter</tag>
-<tag>PageContent</tag>
-<doc>Returns the HTML ``attribute`` of the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:21:02.195" endtime="20221114 08:21:02.226"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:02.194" endtime="20221114 08:21:02.226"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:00.693" endtime="20221114 08:21:02.227"/>
-</test>
-<test id="s1-s1-s2-t5" name="Blank password" line="34">
-<kw name="Go To Login Page" library="login">
-<kw name="New Browser" library="Browser">
-<arg>headless=False</arg>
-<arg>browser=chromium</arg>
-<tag>BrowserControl</tag>
-<tag>Setter</tag>
-<doc>Create a new playwright Browser with specified options.</doc>
-<msg timestamp="20221114 08:21:02.324" level="INFO">{"browser": "chromium", "headless": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "deprecated_pos_args": [], "tracesDir": "/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/e5be0732-d913-4468-b122-6d2d33f6d6d8"}</msg>
-<msg timestamp="20221114 08:21:02.670" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"deprecated_pos_args":[],"tracesDir":"/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/e5be0732-d913-4468-b122-6d2d33f6d6d8"}</msg>
-<status status="PASS" starttime="20221114 08:21:02.323" endtime="20221114 08:21:02.671"/>
-</kw>
-<kw name="New Page" library="Browser">
-<arg>http://localhost:3000</arg>
-<tag>BrowserControl</tag>
-<tag>Setter</tag>
-<doc>Open a new Page.</doc>
-<msg timestamp="20221114 08:21:09.685" level="INFO">Successfully initialized new page object and opened url: http://localhost:3000</msg>
-<msg timestamp="20221114 08:21:09.686" level="INFO">No context was open. New context was automatically opened when this page is created.</msg>
-<status status="PASS" starttime="20221114 08:21:02.672" endtime="20221114 08:21:09.686"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:02.322" endtime="20221114 08:21:09.687"/>
-</kw>
-<kw name="Fill Credentials" library="login">
-<arg>admin@smartbit.com</arg>
-<arg>${EMPTY}</arg>
-<kw name="Fill Text" library="Browser">
-<arg>css=input[placeholder="Seu e-mail"]</arg>
-<arg>${email}</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Clears and fills the given ``txt`` into the text field found by ``selector``.</doc>
-<msg timestamp="20221114 08:21:09.698" level="INFO">Fills the text 'admin@smartbit.com' in the given field.</msg>
-<status status="PASS" starttime="20221114 08:21:09.697" endtime="20221114 08:21:09.753"/>
-</kw>
-<kw name="Fill Text" library="Browser">
-<arg>css=input[placeholder="Sua Senha"]</arg>
-<arg>${pass}</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Clears and fills the given ``txt`` into the text field found by ``selector``.</doc>
-<msg timestamp="20221114 08:21:09.754" level="INFO">Fills the text '' in the given field.</msg>
-<status status="PASS" starttime="20221114 08:21:09.754" endtime="20221114 08:21:09.779"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:09.691" endtime="20221114 08:21:09.780"/>
-</kw>
-<kw name="Submit Credentials" library="login">
-<kw name="Click" library="Browser">
-<arg>css=button &gt;&gt; text=Entrar no sistema</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Simulates mouse click on the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:21:09.782" endtime="20221114 08:21:09.903"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:09.781" endtime="20221114 08:21:09.904"/>
-</kw>
-<kw name="Alert Text Should Be" library="login">
-<arg>password</arg>
-<arg>A senha é obrigatória</arg>
-<kw name="Get Text" library="Browser">
-<arg>xpath=//input[@type="${field}"]/..//span</arg>
-<arg>equal</arg>
-<arg>${expected_text}</arg>
-<tag>Assertion</tag>
-<tag>Getter</tag>
-<tag>PageContent</tag>
-<doc>Returns text attribute of the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:21:09.906" endtime="20221114 08:21:09.946"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:09.904" endtime="20221114 08:21:09.947"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:02.316" endtime="20221114 08:21:09.949"/>
-</test>
-<test id="s1-s1-s2-t6" name="Blank email" line="40">
-<kw name="Go To Login Page" library="login">
-<kw name="New Browser" library="Browser">
-<arg>headless=False</arg>
-<arg>browser=chromium</arg>
-<tag>BrowserControl</tag>
-<tag>Setter</tag>
-<doc>Create a new playwright Browser with specified options.</doc>
-<msg timestamp="20221114 08:21:10.040" level="INFO">{"browser": "chromium", "headless": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "deprecated_pos_args": [], "tracesDir": "/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/080f0f91-69e0-4d03-b317-a279dc90819e"}</msg>
-<msg timestamp="20221114 08:21:10.389" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"deprecated_pos_args":[],"tracesDir":"/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/080f0f91-69e0-4d03-b317-a279dc90819e"}</msg>
-<status status="PASS" starttime="20221114 08:21:10.039" endtime="20221114 08:21:10.389"/>
-</kw>
-<kw name="New Page" library="Browser">
-<arg>http://localhost:3000</arg>
-<tag>BrowserControl</tag>
-<tag>Setter</tag>
-<doc>Open a new Page.</doc>
-<msg timestamp="20221114 08:21:11.367" level="INFO">Successfully initialized new page object and opened url: http://localhost:3000</msg>
-<msg timestamp="20221114 08:21:11.368" level="INFO">No context was open. New context was automatically opened when this page is created.</msg>
-<status status="PASS" starttime="20221114 08:21:10.390" endtime="20221114 08:21:11.368"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:10.038" endtime="20221114 08:21:11.369"/>
-</kw>
-<kw name="Fill Credentials" library="login">
-<arg>${EMPTY}</arg>
-<arg>qacademy</arg>
-<kw name="Fill Text" library="Browser">
-<arg>css=input[placeholder="Seu e-mail"]</arg>
-<arg>${email}</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Clears and fills the given ``txt`` into the text field found by ``selector``.</doc>
-<msg timestamp="20221114 08:21:11.378" level="INFO">Fills the text '' in the given field.</msg>
-<status status="PASS" starttime="20221114 08:21:11.376" endtime="20221114 08:21:11.437"/>
-</kw>
-<kw name="Fill Text" library="Browser">
-<arg>css=input[placeholder="Sua Senha"]</arg>
-<arg>${pass}</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Clears and fills the given ``txt`` into the text field found by ``selector``.</doc>
-<msg timestamp="20221114 08:21:11.438" level="INFO">Fills the text 'qacademy' in the given field.</msg>
-<status status="PASS" starttime="20221114 08:21:11.438" endtime="20221114 08:21:11.464"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:11.370" endtime="20221114 08:21:11.466"/>
-</kw>
-<kw name="Submit Credentials" library="login">
-<kw name="Click" library="Browser">
-<arg>css=button &gt;&gt; text=Entrar no sistema</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Simulates mouse click on the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:21:11.470" endtime="20221114 08:21:11.542"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:11.469" endtime="20221114 08:21:11.542"/>
-</kw>
-<kw name="Alert Text Should Be" library="login">
-<arg>email</arg>
-<arg>O e-mail é obrigatório</arg>
-<kw name="Get Text" library="Browser">
-<arg>xpath=//input[@type="${field}"]/..//span</arg>
-<arg>equal</arg>
-<arg>${expected_text}</arg>
-<tag>Assertion</tag>
-<tag>Getter</tag>
-<tag>PageContent</tag>
-<doc>Returns text attribute of the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:21:11.544" endtime="20221114 08:21:11.572"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:11.543" endtime="20221114 08:21:11.572"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:10.035" endtime="20221114 08:21:11.573"/>
-</test>
-<test id="s1-s1-s2-t7" name="Blank email and password" line="46">
-<kw name="Go To Login Page" library="login">
-<kw name="New Browser" library="Browser">
-<arg>headless=False</arg>
-<arg>browser=chromium</arg>
-<tag>BrowserControl</tag>
-<tag>Setter</tag>
-<doc>Create a new playwright Browser with specified options.</doc>
-<msg timestamp="20221114 08:21:11.657" level="INFO">{"browser": "chromium", "headless": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "deprecated_pos_args": [], "tracesDir": "/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/15160f00-6918-44d2-8b53-72a183bba0e1"}</msg>
-<msg timestamp="20221114 08:21:12.010" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"deprecated_pos_args":[],"tracesDir":"/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/15160f00-6918-44d2-8b53-72a183bba0e1"}</msg>
-<status status="PASS" starttime="20221114 08:21:11.656" endtime="20221114 08:21:12.011"/>
-</kw>
-<kw name="New Page" library="Browser">
-<arg>http://localhost:3000</arg>
-<tag>BrowserControl</tag>
-<tag>Setter</tag>
-<doc>Open a new Page.</doc>
-<msg timestamp="20221114 08:21:13.098" level="INFO">Successfully initialized new page object and opened url: http://localhost:3000</msg>
-<msg timestamp="20221114 08:21:13.099" level="INFO">No context was open. New context was automatically opened when this page is created.</msg>
-<status status="PASS" starttime="20221114 08:21:12.012" endtime="20221114 08:21:13.101"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:11.655" endtime="20221114 08:21:13.102"/>
-</kw>
-<kw name="Submit Credentials" library="login">
-<kw name="Click" library="Browser">
-<arg>css=button &gt;&gt; text=Entrar no sistema</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Simulates mouse click on the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:21:13.109" endtime="20221114 08:21:13.214"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:13.108" endtime="20221114 08:21:13.215"/>
-</kw>
-<kw name="Alert Text Should Be" library="login">
-<arg>email</arg>
-<arg>O e-mail é obrigatório</arg>
-<kw name="Get Text" library="Browser">
-<arg>xpath=//input[@type="${field}"]/..//span</arg>
-<arg>equal</arg>
-<arg>${expected_text}</arg>
-<tag>Assertion</tag>
-<tag>Getter</tag>
-<tag>PageContent</tag>
-<doc>Returns text attribute of the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:21:13.216" endtime="20221114 08:21:13.237"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:13.215" endtime="20221114 08:21:13.237"/>
-</kw>
-<kw name="Alert Text Should Be" library="login">
-<arg>password</arg>
-<arg>A senha é obrigatória</arg>
-<kw name="Get Text" library="Browser">
-<arg>xpath=//input[@type="${field}"]/..//span</arg>
-<arg>equal</arg>
-<arg>${expected_text}</arg>
-<tag>Assertion</tag>
-<tag>Getter</tag>
-<tag>PageContent</tag>
-<doc>Returns text attribute of the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:21:13.239" endtime="20221114 08:21:13.254"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:13.238" endtime="20221114 08:21:13.254"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:11.647" endtime="20221114 08:21:13.255"/>
-</test>
-<doc>Suite de testes de autenticação
-Administrador deve acessar o portal de gestão de academias</doc>
-<status status="PASS" starttime="20221114 08:20:55.517" endtime="20221114 08:21:13.331"/>
+<status status="PASS" starttime="20221124 09:35:36.065" endtime="20221124 09:35:41.902"/>
 </suite>
-<suite id="s1-s1-s3" name="Online" source="/home/fschefer/Robocamp_Git/Robocamp-2022/tests/online.robot">
-<test id="s1-s1-s3-t1" name="Portal Admin deve estar online" line="7">
-<kw name="New Browser" library="Browser">
-<arg>headless=False</arg>
-<arg>browser=chromium</arg>
-<tag>BrowserControl</tag>
-<tag>Setter</tag>
-<doc>Create a new playwright Browser with specified options.</doc>
-<msg timestamp="20221114 08:21:13.356" level="INFO">{"browser": "chromium", "headless": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "deprecated_pos_args": [], "tracesDir": "/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/2e9af076-f7f9-43bf-9bd5-70ee95a6439f"}</msg>
-<msg timestamp="20221114 08:21:13.686" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"deprecated_pos_args":[],"tracesDir":"/home/fschefer/Robocamp_Git/Robocamp-2022/results/browser/traces/2e9af076-f7f9-43bf-9bd5-70ee95a6439f"}</msg>
-<status status="PASS" starttime="20221114 08:21:13.355" endtime="20221114 08:21:13.687"/>
-</kw>
-<kw name="New Page" library="Browser">
-<arg>http://localhost:3000</arg>
-<tag>BrowserControl</tag>
-<tag>Setter</tag>
-<doc>Open a new Page.</doc>
-<msg timestamp="20221114 08:21:14.767" level="INFO">Successfully initialized new page object and opened url: http://localhost:3000</msg>
-<msg timestamp="20221114 08:21:14.768" level="INFO">No context was open. New context was automatically opened when this page is created.</msg>
-<status status="PASS" starttime="20221114 08:21:13.688" endtime="20221114 08:21:14.768"/>
-</kw>
-<kw name="Get Text" library="Browser">
-<arg>h1</arg>
-<arg>contains</arg>
-<arg>Painel do Administrador</arg>
-<tag>Assertion</tag>
-<tag>Getter</tag>
-<tag>PageContent</tag>
-<doc>Returns text attribute of the element found by ``selector``.</doc>
-<status status="PASS" starttime="20221114 08:21:14.771" endtime="20221114 08:21:14.835"/>
-</kw>
-<kw name="Sleep" library="BuiltIn">
-<arg>1</arg>
-<doc>Pauses the test executed for the given time.</doc>
-<msg timestamp="20221114 08:21:15.836" level="INFO">Slept 1 second</msg>
-<status status="PASS" starttime="20221114 08:21:14.835" endtime="20221114 08:21:15.837"/>
-</kw>
-<status status="PASS" starttime="20221114 08:21:13.351" endtime="20221114 08:21:15.837"/>
-</test>
-<doc>Verifica se a aplicação está online</doc>
-<status status="PASS" starttime="20221114 08:21:13.340" endtime="20221114 08:21:15.919"/>
-</suite>
-<status status="PASS" starttime="20221114 08:20:51.876" endtime="20221114 08:21:15.929"/>
-</suite>
-<status status="PASS" starttime="20221114 08:20:51.849" endtime="20221114 08:21:15.936"/>
+<status status="PASS" starttime="20221124 09:35:36.041" endtime="20221124 09:35:41.907"/>
 </suite>
 <statistics>
 <total>
-<stat pass="9" fail="0" skip="0">All Tests</stat>
+<stat pass="1" fail="0" skip="0">All Tests</stat>
 </total>
 <tag>
 </tag>
 <suite>
-<stat pass="9" fail="0" skip="0" id="s1" name="Robocamp-2022">Robocamp-2022</stat>
-<stat pass="9" fail="0" skip="0" id="s1-s1" name="Tests">Robocamp-2022.Tests</stat>
+<stat pass="1" fail="0" skip="0" id="s1" name="Robocamp-2022">Robocamp-2022</stat>
+<stat pass="1" fail="0" skip="0" id="s1-s1" name="Tests">Robocamp-2022.Tests</stat>
 <stat pass="1" fail="0" skip="0" id="s1-s1-s1" name="Enrolls">Robocamp-2022.Tests.Enrolls</stat>
-<stat pass="7" fail="0" skip="0" id="s1-s1-s2" name="Login">Robocamp-2022.Tests.Login</stat>
-<stat pass="1" fail="0" skip="0" id="s1-s1-s3" name="Online">Robocamp-2022.Tests.Online</stat>
 </suite>
 </statistics>
 <errors>
