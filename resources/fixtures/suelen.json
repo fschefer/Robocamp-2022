@@ -1,0 +1,12 @@
+{
+    "student": {
+        "feet_tall": 1.60,
+        "weight": 50,
+        "age": 20,
+        "email": "suelen@yahoo.com",
+        "name": "Suelen Cristina"
+    },
+    "enroll": {
+        "plan": "Smart"
+    }
+}
